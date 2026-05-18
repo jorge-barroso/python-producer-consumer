@@ -57,26 +57,6 @@ class PriceChangeConsumer:
                 if self.__paused and self.__queue.qsize() <= self.__COMMIT_OFFSET / 2:
                     await self.__consumer.resume([TopicPartition[message.topic(), message.partition()]])
 
-    async def process_message(self, message: Message) -> None:
-        """
-        This is just a simple demo, specific business logic would typically start here
-        Ideally making use of other service classes instead of this method
-        to keep the system clean despite complexity and testable
-        """
-        log_message = f"""Message Received:
-    Topic: {message.topic()}
-    Partition: {message.partition()}    
-    Offset: {message.offset()}"""
-        logging.info(log_message)
-
-        columns = PriceChangeEvent.model_fields().keys()
-        price_change = PriceChangeEvent.model_validate(message.value())
-        data = price_change.model_dump()
-        with open("/app/consumption/consumed.log", "a") as f:
-            csv_writer = csv.DictWriter(f, fieldnames=columns)
-            csv_writer.writeheader()
-            csv_writer.writerow(data)
-
     def enqueue(self, message: Message) -> None:
         logging.info(f"Enqueuing message #{message.offset()}")
         try:
