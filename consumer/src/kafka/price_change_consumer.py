@@ -1,10 +1,9 @@
 import asyncio
-import csv
 import logging
-from asyncio import QueueFull
 from dataclasses import dataclass, field
+from typing import Coroutine
 
-from confluent_kafka import Message, TopicPartition
+from confluent_kafka import Message
 from confluent_kafka.aio import AIOConsumer
 
 from consumer.src.message_processors.price_change_message_processor import PriceChangeMessageProcessor
@@ -12,23 +11,28 @@ from consumer.src.message_processors.price_change_message_processor import Price
 
 @dataclass
 class PriceChangeConsumer:
-    __COMMIT_OFFSET = 100
+    __COMMIT_INTERVAL = 100
     __QUEUE_SIZE = 1000
-    __paused: bool
     __stopping: bool
     __partition: int
     __topic: str
+    __messages_since_last_commit: int
     __consumer: AIOConsumer
+    __last_successful_message: Message | None
+    __last_commit_attempt: Coroutine | None
+    __task: asyncio.Task | None
     __queue: asyncio.Queue[Message] = field(default_factory=asyncio.Queue)
-    __task: asyncio.Task | None = None
 
     def __init__(self, partition: int, topic: str, consumer: AIOConsumer, processor: PriceChangeMessageProcessor) -> None:
         logging.info(f"Initializing consumer for partition {partition}")
-        self.__paused = False
         self.__stopping = False
         self.__partition = partition
         self.__topic = topic
+        self.__messages_since_last_commit = 0
         self.__consumer = consumer
+        self.__last_successful_message = None
+        self.__last_commit_attempt = None
+        self.__task = None
         self.__price_change_message_processor = processor
         self.__queue = asyncio.Queue(maxsize=self.__QUEUE_SIZE)
 
@@ -48,27 +52,35 @@ class PriceChangeConsumer:
             try:
                 logging.info(f"Received message in partition consumer {self.__partition}")
                 self.__price_change_message_processor.process_message(message)
-                if message.offset() % self.__COMMIT_OFFSET == 0:
-                    await self.__consumer.commit(message=message, asynchronous=False)
+                await self.try_commit(message)
             except Exception as e:
-                logging.error(f"Error getting next message from the queue: {e}")
+                logging.exception("Error getting next message from the queue", e)
             finally:
                 self.__queue.task_done()
-                if self.__paused and self.__queue.qsize() <= self.__COMMIT_OFFSET / 2:
-                    await self.__consumer.resume([TopicPartition[message.topic(), message.partition()]])
 
-    def enqueue(self, message: Message) -> None:
+    async def try_commit(self, message: Message):
+        self.__last_successful_message = message
+        self.__messages_since_last_commit += 1
+        if self.__messages_since_last_commit < self.__COMMIT_INTERVAL:
+            return
+
+        await self.await_pending_commit()
+
+        self.__last_commit_attempt = self.__consumer.commit(message=message, asynchronous=True)
+        self.__messages_since_last_commit = 0
+
+    async def enqueue(self, message: Message) -> None:
         logging.info(f"Enqueuing message #{message.offset()}")
-        try:
-            self.__queue.put_nowait(message)
-        except QueueFull as q:
-            self.__paused = True
-            raise q
+        await self.__queue.put(message)
 
     async def stop(self):
         self.__stopping = True
 
         await self.__queue.join()
+
+        if self.__last_successful_message:
+            await self.await_pending_commit()
+            await self.__consumer.commit(message=self.__last_successful_message, asynchronous=False)
 
         if self.__task:
             self.__task.cancel()
@@ -77,3 +89,7 @@ class PriceChangeConsumer:
                 await self.__task
             except asyncio.CancelledError:
                 pass
+
+    async def await_pending_commit(self):
+        if self.__last_commit_attempt:
+            await self.__last_commit_attempt

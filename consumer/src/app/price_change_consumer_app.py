@@ -1,7 +1,5 @@
 import logging
-from asyncio import QueueFull
 
-from confluent_kafka import TopicPartition
 from confluent_kafka.aio import AIOConsumer
 
 from consumer.src.core.settings import settings
@@ -47,19 +45,21 @@ class PriceChangeConsumerApp:
 
         logging.info(f"Received message: #{message.offset()}")
         partition = message.partition()
+        processor = await self.get_processor(partition)
+
+        await processor.enqueue(message)
+
+    async def get_processor(self, partition) -> PriceChangeConsumer:
         processor = self.__partition_processors.get(partition)
         if not processor:
             logging.info("Building new processor")
-            processor = PriceChangeConsumer(partition, message.topic(), self.__kafka_consumer, self.__price_change_message_processor)
+            processor = PriceChangeConsumer(partition, settings.topic, self.__kafka_consumer,
+                                            self.__price_change_message_processor)
             self.__partition_processors[partition] = processor
             processor.start()
         else:
             logging.info("Processor already existed")
-
-        try:
-            processor.enqueue(message)
-        except QueueFull:
-            await self.__kafka_consumer.pause([TopicPartition(settings.topic(), partition)])
+        return processor
 
     async def shutdown(self) -> None:
         for processor in self.__partition_processors.values():
