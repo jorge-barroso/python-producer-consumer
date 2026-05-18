@@ -13,7 +13,7 @@ from messages.price.price_change import PriceChangeEvent
 
 def test_full_queue_raises_and_pauses():
     kafka_consumer: AsyncMock = create_autospec(AIOConsumer, instance=True)
-    partition_consumer = PriceChangeConsumer(0, "sample", kafka_consumer)
+    partition_consumer = PriceChangeConsumer(0, "sample", kafka_consumer, self.__price_change_message_processor)
 
     # We should allow 1000 messages to be enqueued
     for i in range(1000):

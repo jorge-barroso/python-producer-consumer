@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from confluent_kafka import Message, TopicPartition
 from confluent_kafka.aio import AIOConsumer
 
-from messages.price.price_change import PriceChangeEvent
+from consumer.src.message_processors.price_change_message_processor import PriceChangeMessageProcessor
 
 
 @dataclass
@@ -22,13 +22,14 @@ class PriceChangeConsumer:
     __queue: asyncio.Queue[Message] = field(default_factory=asyncio.Queue)
     __task: asyncio.Task | None = None
 
-    def __init__(self, partition: int, topic: str, consumer: AIOConsumer) -> None:
+    def __init__(self, partition: int, topic: str, consumer: AIOConsumer, processor: PriceChangeMessageProcessor) -> None:
         logging.info(f"Initializing consumer for partition {partition}")
         self.__paused = False
         self.__stopping = False
         self.__partition = partition
         self.__topic = topic
         self.__consumer = consumer
+        self.__price_change_message_processor = processor
         self.__queue = asyncio.Queue(maxsize=self.__QUEUE_SIZE)
 
     def start(self):
@@ -46,8 +47,7 @@ class PriceChangeConsumer:
             message = await self.__queue.get()
             try:
                 logging.info(f"Received message in partition consumer {self.__partition}")
-                await self.process_message(message)
-                await self.__consumer.store_offsets(message=message)
+                self.__price_change_message_processor.process_message(message)
                 if message.offset() % self.__COMMIT_OFFSET == 0:
                     await self.__consumer.commit(message=message, asynchronous=False)
             except Exception as e:
