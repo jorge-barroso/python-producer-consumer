@@ -58,8 +58,9 @@ services:
     build:
       context: .
       dockerfile: consumer/Dockerfile
+    stop_signal: SIGTERM
     deploy:
-      replicas: 2
+      replicas: ${KAFKA_NUM_PARTITIONS}
 #    Disabled because it's incompatible with having multiple replicas
 #    container_name: consumer-python-producer-consumer
     environment:

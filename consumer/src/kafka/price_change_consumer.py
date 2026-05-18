@@ -78,6 +78,7 @@ class PriceChangeConsumer:
             await self.__last_commit_attempt
 
     async def stop(self):
+        logging.info(f"Stopping consumer {self.__partition}")
         self.__stopping = True
 
         await self.__queue.join()

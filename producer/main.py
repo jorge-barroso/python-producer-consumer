@@ -32,7 +32,7 @@ app.include_router(router=price_change_router)
 if __name__ == "__main__":
     uvicorn.run(
         "producer.main:app",
-        host="127.0.0.1",
+        host="0.0.0.0",
         port=settings.port,
         reload=settings.reload_app,
     )

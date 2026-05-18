@@ -11,8 +11,10 @@ class PriceChangeConsumerApp:
     __kafka_consumer: AIOConsumer
     __partition_processors: dict[int, PriceChangeConsumer]
     __price_change_message_processor: PriceChangeMessageProcessor
+    __stop: bool
 
     def __init__(self):
+        self.__stop = False
         consumer_options = {'bootstrap.servers': settings.bootstrap_servers, 'group.id': settings.consumer_group,
                             'auto.offset.reset': 'earliest', 'enable.auto.commit': False}
         logging.info(f"""Initializing Kafka Consumer with settings:\n{consumer_options}""")
@@ -29,11 +31,8 @@ class PriceChangeConsumerApp:
 
     async def run(self) -> None:
         logging.info("Initiated Polling")
-        try:
-            while True:
-                await self.get_message()
-        finally:
-            await self.__kafka_consumer.close()
+        while not self.__stop:
+            await self.get_message()
 
     async def get_message(self) -> None:
         message = await self.__kafka_consumer.poll(1.0)
@@ -60,6 +59,9 @@ class PriceChangeConsumerApp:
         else:
             logging.info("Processor already existed")
         return processor
+
+    async def stop_polling(self):
+        self.__stop = True
 
     async def shutdown(self) -> None:
         for processor in self.__partition_processors.values():
