@@ -1,0 +1,188 @@
+### POST request to update price
+POST http://127.0.0.1:12021/price_change
+Content-Type: application/json
+
+{
+    "currency":"usd",
+    "amount":125.99,
+    "asset_id":"2c8db081-f11e-43c3-9a33-0f62c013c5e9",
+    "source_system":"legacy system"
+}
+
+###POST request to update price
+POST http://127.0.0.1:12021/price_change
+Content-Type: application/json
+
+{
+    "currency":"eur",
+    "amount":126,
+    "asset_id":"2c8db081-f11e-43c3-9a33-0f62c013c5e9",
+    "source_system":"legacy system"
+}
+
+###POST request to update price
+POST http://127.0.0.1:12021/price_change
+Content-Type: application/json
+
+{
+    "currency":"eur",
+    "amount":126,
+    "asset_id":"2c8db081-f11e-43c3-9a33-0f62c013c5e9",
+    "source_system":"legacy system"
+}
+
+###POST request to update price
+POST http://127.0.0.1:12021/price_change
+Content-Type: application/json
+
+{
+    "currency":"eur",
+    "amount":126,
+    "asset_id":"2c8db081-f11e-43c3-9a33-0f62c013c5e9",
+    "source_system":"legacy system"
+}
+
+###POST request to update price
+POST http://127.0.0.1:12021/price_change
+Content-Type: application/json
+
+{
+    "currency":"eur",
+    "amount":126,
+    "asset_id":"2c8db081-f11e-43c3-9a33-0f62c013c5e9",
+    "source_system":"legacy system"
+}
+
+###POST request to update price
+POST http://127.0.0.1:12021/price_change
+Content-Type: application/json
+
+{
+    "currency":"eur",
+    "amount":126,
+    "asset_id":"2c8db081-f11e-43c3-9a33-0f62c013c5e9",
+    "source_system":"legacy system"
+}
+
+###POST request to update price
+POST http://127.0.0.1:12021/price_change
+Content-Type: application/json
+
+{
+    "currency":"eur",
+    "amount":126,
+    "asset_id":"2c8db081-f11e-43c3-9a33-0f62c013c5e9",
+    "source_system":"legacy system"
+}
+
+###POST request to update price
+POST http://127.0.0.1:12021/price_change
+Content-Type: application/json
+
+{
+    "currency":"eur",
+    "amount":126,
+    "asset_id":"2c8db081-f11e-43c3-9a33-0f62c013c5e9",
+    "source_system":"legacy system"
+}
+
+###POST request to update price
+POST http://127.0.0.1:12021/price_change
+Content-Type: application/json
+
+{
+    "currency":"eur",
+    "amount":126,
+    "asset_id":"2c8db081-f11e-43c3-9a33-0f62c013c5e9",
+    "source_system":"legacy system"
+}
+
+###POST request to update price
+POST http://127.0.0.1:12021/price_change
+Content-Type: application/json
+
+{
+    "currency":"eur",
+    "amount":126,
+    "asset_id":"2c8db081-f11e-43c3-9a33-0f62c013c5e9",
+    "source_system":"legacy system"
+}
+
+###POST request to update price
+POST http://127.0.0.1:12021/price_change
+Content-Type: application/json
+
+{
+    "currency":"eur",
+    "amount":126,
+    "asset_id":"2c8db081-f11e-43c3-9a33-0f62c013c5e9",
+    "source_system":"legacy system"
+}
+
+###POST request to update price
+POST http://127.0.0.1:12021/price_change
+Content-Type: application/json
+
+{
+    "currency":"eur",
+    "amount":126,
+    "asset_id":"2c8db081-f11e-43c3-9a33-0f62c013c5e9",
+    "source_system":"legacy system"
+}
+
+###POST request to update price
+POST http://127.0.0.1:12021/price_change
+Content-Type: application/json
+
+{
+    "currency":"eur",
+    "amount":126,
+    "asset_id":"2c8db081-f11e-43c3-9a33-0f62c013c5e9",
+    "source_system":"legacy system"
+}
+
+###POST request to update price
+POST http://127.0.0.1:12021/price_change
+Content-Type: application/json
+
+{
+    "currency":"eur",
+    "amount":126,
+    "asset_id":"2c8db081-f11e-43c3-9a33-0f62c013c5e9",
+    "source_system":"legacy system"
+}
+
+###POST request to update price
+POST http://127.0.0.1:12021/price_change
+Content-Type: application/json
+
+{
+    "currency":"eur",
+    "amount":126,
+    "asset_id":"2c8db081-f11e-43c3-9a33-0f62c013c5e9",
+    "source_system":"legacy system"
+}
+
+###POST request to update price
+POST http://127.0.0.1:12021/price_change
+Content-Type: application/json
+
+{
+    "currency":"eur",
+    "amount":126,
+    "asset_id":"2c8db081-f11e-43c3-9a33-0f62c013c5e9",
+    "source_system":"legacy system"
+}
+
+###POST request to update price
+POST http://127.0.0.1:12021/price_change
+Content-Type: application/json
+
+{
+    "currency":"eur",
+    "amount":126,
+    "asset_id":"2c8db081-f11e-43c3-9a33-0f62c013c5e9",
+    "source_system":"legacy system"
+}
+
+###

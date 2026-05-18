@@ -1,0 +1,74 @@
+services:
+  kafka:
+    image: apache/kafka:latest
+    container_name: kafka-python-producer-consumer
+    ports:
+      - "29092:29092"
+    environment:
+      KAFKA_NODE_ID: ${KAFKA_NODE_ID}
+      KAFKA_NUM_PARTITIONS: ${KAFKA_NUM_PARTITIONS}
+      # Single-node Kafka using KRaft, no ZooKeeper
+      KAFKA_PROCESS_ROLES: ${KAFKA_PROCESS_ROLES}
+      KAFKA_CONTROLLER_QUORUM_VOTERS: ${KAFKA_CONTROLLER_QUORUM_VOTERS}
+
+      # Internal, external, and controller listeners
+      KAFKA_LISTENERS: ${KAFKA_LISTENERS}
+      KAFKA_ADVERTISED_LISTENERS: ${KAFKA_ADVERTISED_LISTENERS}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: ${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP}
+
+      KAFKA_INTER_BROKER_LISTENER_NAME: ${KAFKA_INTER_BROKER_LISTENER_NAME}
+      KAFKA_CONTROLLER_LISTENER_NAMES: ${KAFKA_CONTROLLER_LISTENER_NAMES}
+
+      # Single-node dev settings
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: ${KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR}
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: ${KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR}
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: ${KAFKA_TRANSACTION_STATE_LOG_MIN_ISR}
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: ${KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS}
+
+      # Optional but useful for local dev
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: ${KAFKA_AUTO_CREATE_TOPICS_ENABLE}
+    healthcheck:
+      test: [ "CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 >/dev/null 2>&1" ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+
+  producer:
+    build:
+      context: .
+      dockerfile: producer/Dockerfile
+    container_name: producer-python-producer-consumer
+    environment:
+      PRODUCER_PORT: ${PRODUCER_PORT}
+      RELOAD: ${RELOAD}
+      KAFKA_INTERNAL_BOOTSTRAP_SERVERS: ${KAFKA_INTERNAL_BOOTSTRAP_SERVERS}
+      KAFKA_PRODUCER_CLIENT_ID: ${KAFKA_PRODUCER_CLIENT_ID}
+      KAFKA_PRICE_CHANGE_TOPIC: ${KAFKA_PRICE_CHANGE_TOPIC}
+      KAFKA_IDEMPOTENCE: ${KAFKA_IDEMPOTENCE}
+    ports:
+      - "${PRODUCER_PORT:-12021}:12021"
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  consumer:
+    build:
+      context: .
+      dockerfile: consumer/Dockerfile
+    container_name: consumer-python-producer-consumer
+    environment:
+      KAFKA_INTERNAL_BOOTSTRAP_SERVERS: ${KAFKA_INTERNAL_BOOTSTRAP_SERVERS}
+      KAFKA_PRICE_CHANGE_TOPIC: ${KAFKA_PRICE_CHANGE_TOPIC}
+      KAFKA_CONSUMER_CLIENT_ID: ${KAFKA_CONSUMER_CLIENT_ID}
+    depends_on:
+      - kafka
+    volumes:
+      - consumption-data:/app/consumption
+
+
+volumes:
+  kafka-data:
+  consumption-data:
