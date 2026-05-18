@@ -6,7 +6,7 @@ from sqlalchemy import Numeric, String, CHAR, DateTime, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
-from consumer.db.base import Base
+from consumer.src.db.base import Base
 
 
 class PriceChange(Base):

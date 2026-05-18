@@ -5,9 +5,8 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from consumer.db.base import Base
+from consumer.src.db.base import Base
 from consumer.src.core.settings import settings
-from consumer.src.price_change.model import PriceChange
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

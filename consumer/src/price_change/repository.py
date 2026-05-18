@@ -2,7 +2,7 @@ import logging
 
 from sqlalchemy.exc import IntegrityError
 
-from consumer.db.session import SessionLocal
+from consumer.src.db.session import SessionLocal
 from consumer.src.price_change.model import PriceChange
 
 

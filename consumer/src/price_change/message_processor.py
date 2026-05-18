@@ -17,13 +17,13 @@ class PriceChangeMessageProcessor:
         """
         price_change_event = PriceChangeEvent.model_validate_json(message.value())
         price_change = PriceChange(
-            price_change_event.event_uuid,
-            price_change_event.asset_id,
-            price_change_event.amount,
-            price_change_event.currency,
-            price_change_event.source_system,
-            message.topic(),
-            message.partition(),
-            message.offset(),
+            event_id=price_change_event.event_uuid,
+            asset_id=price_change_event.asset_id,
+            amount=price_change_event.amount,
+            currency=price_change_event.currency,
+            source_system=price_change_event.source_system,
+            kafka_topic=message.topic(),
+            kafka_partition=message.partition(),
+            kafka_offset=message.offset(),
         )
         self.repo.save(price_change)

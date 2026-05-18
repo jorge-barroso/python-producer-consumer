@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from consumer.src.core.settings import settings
 
 engine = create_engine(
-    f"{settings.postgres_host}:{settings.postgres_port}",
+    settings.postgres_url,
     pool_pre_ping=True,
 )
 
