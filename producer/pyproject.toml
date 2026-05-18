@@ -3,8 +3,7 @@ name = "python-producer-consumer"
 version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.14"
-dependencies = [
-    "babel>=2.18.0",
+dependencies = ["babel>=2.18.0",
     "confluent-kafka>=2.14.0",
     "currency-symbols>=2.0.4",
     "fastapi>=0.136.1",
