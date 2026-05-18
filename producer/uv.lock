@@ -149,6 +149,17 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/8f/98/71102b74a81436e7f653f9702549556314308944663a6dab7ec9f9a5d0b1/iso4217parse-0.6.2.tar.gz", hash = "sha256:a7fe41fcd192c66731f584e24b5391b518d9e332edd35cde1cc05beeebf6c620", size = 22511, upload-time = "2025-03-31T11:50:27.365Z" }
 
 [[package]]
+name = "messages"
+version = "0.1.0"
+source = { directory = "../messages" }
+dependencies = [
+    { name = "pydantic" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "pydantic", extras = ["standard"], specifier = ">=2.13.4" }]
+
+[[package]]
 name = "packaging"
 version = "26.2"
 source = { registry = "https://pypi.org/simple" }
@@ -292,6 +303,7 @@ dependencies = [
     { name = "currency-symbols" },
     { name = "fastapi" },
     { name = "iso4217parse" },
+    { name = "messages" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
     { name = "pytest" },
@@ -306,6 +318,7 @@ requires-dist = [
     { name = "currency-symbols", specifier = ">=2.0.4" },
     { name = "fastapi", specifier = ">=0.136.1" },
     { name = "iso4217parse", specifier = ">=0.6.2" },
+    { name = "messages", directory = "../messages" },
     { name = "pydantic", specifier = ">=2.13.4" },
     { name = "pydantic-settings", specifier = ">=2.14.1" },
     { name = "pytest", specifier = ">=9.0.3" },

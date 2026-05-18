@@ -1,6 +1,6 @@
 from confluent_kafka.aio import AIOProducer
 
-from producer.price_change.event_model import PriceChangeEvent
+from messages.price.price_change import PriceChangeEvent
 from producer.price_change.request_model import PriceChangeRequest
 
 

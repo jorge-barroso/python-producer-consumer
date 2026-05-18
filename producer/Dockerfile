@@ -12,12 +12,18 @@ RUN apt-get update \
 
 RUN pip install --no-cache-dir uv
 
-COPY producer/pyproject.toml producer/uv.lock ./
+COPY producer/pyproject.toml producer/uv.lock ./producer/
+COPY messages/pyproject.toml ./messages/
+COPY messages ./messages
+
+WORKDIR /app/producer
 
 RUN uv sync --frozen --no-dev --python /usr/local/bin/python
 
 COPY producer ./producer
 
+ENV PYTHONPATH=/app
+
 EXPOSE 12021
 
-CMD ["sh", "-c", "uv run uvicorn producer.main:app --host 0.0.0.0 --port ${PRODUCER_PORT:-12021}"]
+CMD ["sh", "-c", "uv run --project /app/producer uvicorn producer.main:app --host 0.0.0.0 --port ${PRODUCER_PORT:-12021}"]
