@@ -6,7 +6,7 @@ from typing import Coroutine
 from confluent_kafka import Message
 from confluent_kafka.aio import AIOConsumer
 
-from consumer.src.message_processors.price_change_message_processor import PriceChangeMessageProcessor
+from consumer.src.price_change.message_processor import PriceChangeMessageProcessor
 
 
 @dataclass

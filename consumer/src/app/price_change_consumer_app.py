@@ -4,7 +4,7 @@ from confluent_kafka.aio import AIOConsumer
 
 from consumer.src.core.settings import settings
 from consumer.src.kafka.price_change_consumer import PriceChangeConsumer
-from consumer.src.message_processors.price_change_message_processor import PriceChangeMessageProcessor
+from consumer.src.price_change.message_processor import PriceChangeMessageProcessor
 
 
 class PriceChangeConsumerApp:
@@ -12,6 +12,7 @@ class PriceChangeConsumerApp:
     __partition_processors: dict[int, PriceChangeConsumer]
     __price_change_message_processor: PriceChangeMessageProcessor
     __stop: bool
+
 
     def __init__(self):
         self.__stop = False
