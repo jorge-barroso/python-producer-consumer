@@ -36,6 +36,10 @@ class PriceChangeConsumer:
         self.__price_change_message_processor = processor
         self.__queue = asyncio.Queue(maxsize=self.__QUEUE_SIZE)
 
+    async def enqueue(self, message: Message) -> None:
+        logging.info(f"Enqueuing message #{message.offset()}")
+        await self.__queue.put(message)
+
     def start(self):
         logging.info(f"Starting consumer for partition {self.__partition}")
         self.__task = asyncio.create_task(
@@ -69,9 +73,9 @@ class PriceChangeConsumer:
         self.__last_commit_attempt = self.__consumer.commit(message=message, asynchronous=True)
         self.__messages_since_last_commit = 0
 
-    async def enqueue(self, message: Message) -> None:
-        logging.info(f"Enqueuing message #{message.offset()}")
-        await self.__queue.put(message)
+    async def await_pending_commit(self):
+        if self.__last_commit_attempt:
+            await self.__last_commit_attempt
 
     async def stop(self):
         self.__stopping = True
@@ -89,7 +93,3 @@ class PriceChangeConsumer:
                 await self.__task
             except asyncio.CancelledError:
                 pass
-
-    async def await_pending_commit(self):
-        if self.__last_commit_attempt:
-            await self.__last_commit_attempt
